@@ -331,6 +331,9 @@ class ResnetGenerator(nn.Module):
             n_blocks (int)      -- the number of ResNet blocks
             padding_type (str)  -- the name of padding layer in conv layers: reflect | replicate | zero
         """
+        self.features = []
+        self.detach_layer = [2, 4, 6, 8]
+
         assert(n_blocks >= 0)
         super(ResnetGenerator, self).__init__()
         if type(norm_layer) == functools.partial:
@@ -370,8 +373,14 @@ class ResnetGenerator(nn.Module):
         self.model = nn.Sequential(*model)
 
     def forward(self, input):
+        self.features = []
+        for i, function in enumerate(self.model):
+            input = function(input)
+            if i in self.detach_layer:
+                self.features.append(input.detach())
+        # self.model(input)
         """Standard forward"""
-        return self.model(input)
+        return input
 
 
 class ResnetBlock(nn.Module):
