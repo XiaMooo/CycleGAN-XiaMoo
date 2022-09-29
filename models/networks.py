@@ -332,7 +332,7 @@ class ResnetGenerator(nn.Module):
             padding_type (str)  -- the name of padding layer in conv layers: reflect | replicate | zero
         """
         self.features = []
-        self.detach_layer = [2, 4, 6, 8]
+        self.detach_layer = (3, 6, 9, 18, 21, 24)
 
         assert(n_blocks >= 0)
         super(ResnetGenerator, self).__init__()
@@ -381,6 +381,12 @@ class ResnetGenerator(nn.Module):
         # self.model(input)
         """Standard forward"""
         return input
+
+    def get_features(self):
+        return self.features
+
+    def clear_features(self):
+        self.features = []
 
 
 class ResnetBlock(nn.Module):
